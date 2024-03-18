@@ -189,7 +189,6 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
         blinks[frame_number] = False
 
     insert_mode = False
-    eyemarks_mode = False
     debug_mode = False
 
     fig = plt.figure()
@@ -220,9 +219,10 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
 
         frame = osd(cap, frame, blinks, insert_mode)
 
-        if eyemarks_mode:
+        if debug_mode:
             try:
                 eye_marks = ear.eye_marks(frame)
+                frame = draw_eye_marks(frame, eye_marks)
             except FaceDetectException:
                 print(f"No face detected at frame: {frame_number}")
                 xs.append(frame_number)
@@ -231,43 +231,45 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
                 frame_number += 1
                 continue
 
-        if eyemarks_mode:
-            frame = draw_eye_marks(frame, eye_marks)
-
         cv.imshow("Annotation window", frame)
 
         key = cv.waitKey(0)
 
         if key >= 0:
-            match chr(key):
-                case "i":
-                    insert_mode = True
-                case "\x1b":  # Escape
-                    save_blinks(blinks_file, blinks)  # Save before leaving insert mode
-                    insert_mode = False
-                case n if n in ["n", " "]:
-                    if insert_mode:
-                        blinks[frame_number + 1] = blinks[frame_number]
-                    frame_number += 1
-                case "p":
-                    frame_number = frame_number - 1 if frame_number >= 0 else 0
-                case b if b in ["\r", "b"]:
-                    if insert_mode:
-                        blinks[frame_number] = not blinks[frame_number]
-                case "d":
-                    debug_mode = not debug_mode
-                case "e":
-                    eyemarks_mode = not eyemarks_mode
-                case "s":
-                    annotations = create_annotations(blinks)
-                    write_annotations_file(annotation_file, annotations)
-                case "q":
-                    exit(0)
-                # case "x":
-                #     blinks[frame_number] = False
+            c = chr(key)
+            if c == "d":
+                debug_mode = not debug_mode
+            elif c == "s":
+                annotations = create_annotations(blinks)
+                write_annotations_file(annotation_file, annotations)
+            elif c == "q":
+                exit(0)
 
             if insert_mode:
+                if c == "\x1b":  # Escape
+                    save_blinks(blinks_file, blinks)  # Save before leaving insert mode
+                    insert_mode = False
+                elif c in [" ", "n"]:
+                    blinks[frame_number + 1] = blinks[frame_number]
+                    frame_number += 1
+                elif c == "p":
+                    frame_number = frame_number - 1 if frame_number >= 0 else 0
+                elif c in ["\r", "b"]:
+                    blinks[frame_number] = not blinks[frame_number]
+
                 save_blinks(blinks_file, blinks)
+
+            else:
+                if c == "i":
+                    insert_mode = True
+                elif c in [" ", "n"]:
+                    frame_number += 1
+                elif c == "p":
+                    frame_number = frame_number - 1 if frame_number >= 0 else 0
+                elif c == "o":
+                    frame_number += 10
+                elif c == "a":
+                    frame_number = frame_number - 10 if frame_number >= 10 else 0
 
         if debug_mode:
             print_debug(blinks, frame_number)
