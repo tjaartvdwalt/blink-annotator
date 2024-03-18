@@ -1,0 +1,30 @@
+[project]
+name = "blink-annotator"
+dynamic = ["version"]
+
+requires-python = ">=3.6"
+license = "MIT"
+authors = [{ name = "Tjaart van der Walt", email = "tjaart@tjaart.org" }]
+
+keywords = ["opencv", "blink"]
+dependencies = ["matplotlib", "numpy", "opencv-contrib-python", "typer"]
+
+[project.scripts]
+annotator = "blink_annotator:app"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel.force-include]
+"./models" = "models"
+
+# build.hooks.vcs.version-file = "src/<package>/version.py"
+
+# [tool.hatch.build.targets.wheel]
+# artifacts = [
+#   "./models/haarcascade_frontalface_alt.xml"
+# ]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
