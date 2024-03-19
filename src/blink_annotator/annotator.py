@@ -134,11 +134,10 @@ def osd(cap, frame, blinks, insert_mode):
     return frame
 
 
-def draw_eye_marks(frame, eyemarks):
+def draw_eye_marks(frame, facemarks):
     red = (0, 0, 255)
-    for eyemark in eyemarks:
-        x, y = eyemark
-        cv.circle(frame, (int(x), int(y)), 1, red, -1)
+    for idx in range(36, 48):
+        cv.circle(frame, (facemarks.part(idx).x, facemarks.part(idx).y), 2, red, -1)
 
     return frame
 
@@ -280,7 +279,7 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
 
                 fig.clear()
 
-                if frame_number == 1 or frame_number > xs[-1]:
+                if len(xs) < 13 or frame_number > xs[-1]:
                     xs.append(frame_number)
                     ys.append(l_ear)
                     (line1,) = plt.plot(xs, ys, "ko-")

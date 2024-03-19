@@ -1,4 +1,5 @@
 import cv2 as cv
+import dlib
 import math
 import numpy as np
 import os
@@ -21,15 +22,19 @@ class EAR:
             "..",
             "..",
             "models",
-            "haarcascade_frontalface_alt.xml"
+            "haarcascade_frontalface_alt.xml",
         ),
         facemarks_file=os.path.join(
-            os.path.dirname(__file__), "..", "..", "..", "models", "lbfmodel.yaml"
+            os.path.dirname(__file__),
+            "..",
+            "..",
+            "..",
+            "models",
+            "shape_predictor_68_face_landmarks.dat",
         ),
     ):
         self.cascade = self.__load_cascade(cascade_file)
         self.facemarks_model = self.__load_facemarks(facemarks_file)
-
         self.__frame = None
         self.__facemarks = None
 
@@ -42,10 +47,11 @@ class EAR:
         return face_cascade
 
     def __load_facemarks(self, file):
-        facemark = cv.face.createFacemarkLBF()
-        facemark.loadModel(file)
+        predictor = dlib.shape_predictor(file)
+        # facemark = cv.face.createFacemarkLBF()
+        # facemark.loadModel(file)
 
-        return facemark
+        return predictor
 
     def __face_detect(self, frame):
         frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -62,25 +68,31 @@ class EAR:
             raise FaceDetectException("No face detected!")
 
     def __dist(self, p1, p2):
-        return math.sqrt(((p2[0] - p1[0]) ** 2) + ((p2[1] - p1[1]) ** 2))
+        return math.sqrt(((p2.x - p1.x) ** 2) + ((p2.y - p1.y) ** 2))
 
     def __fit(self, frame):
         if self.__frame is not frame:
             face = self.__face_detect(frame)
-            self.__facemarks = self.facemarks_model.fit(frame, np.array([face]))
+            print(f"face: {face}")
+            # x1 = face[0]
+            # y2 = face[1]
+            drect = dlib.rectangle(face[0], face[1], face[0] + face[2], face[1] + face[3])
+            self.__facemarks = self.facemarks_model(frame, drect)
 
-        return self.__facemarks[1][0][0]
+        # print(face)
+        # print(self.__facemarks)
+        return self.__facemarks
 
     def calc(self, frame):
         facemark = self.__fit(frame)
 
-        right_vert_1 = self.__dist(facemark[37], facemark[41])
-        right_vert_2 = self.__dist(facemark[38], facemark[40])
-        left_vert_1 = self.__dist(facemark[43], facemark[47])
-        left_vert_2 = self.__dist(facemark[44], facemark[46])
+        right_vert_1 = self.__dist(facemark.part(37), facemark.part(41))
+        right_vert_2 = self.__dist(facemark.part(38), facemark.part(40))
+        left_vert_1 = self.__dist(facemark.part(43), facemark.part(47))
+        left_vert_2 = self.__dist(facemark.part(46), facemark.part(46))
 
-        left_horz = self.__dist(facemark[36], facemark[39])
-        right_horz = self.__dist(facemark[42], facemark[45])
+        left_horz = self.__dist(facemark.part(36), facemark.part(39))
+        right_horz = self.__dist(facemark.part(42), facemark.part(45))
 
         left_aspect_ratio = (left_vert_1 + left_vert_2) / (2 * left_horz)
         right_aspect_ratio = (right_vert_1 + right_vert_2) / (2 * right_horz)
@@ -90,4 +102,4 @@ class EAR:
     def eye_marks(self, frame):
         facemark = self.__fit(frame)
 
-        return facemark[36:48]
+        return facemark

@@ -1,4 +1,4 @@
 
-`haarcascade_frontalface_alt.xml` is copied from the official [OpenCV](https://github.com/opencv/opencv/tree/4.x/data/haarcascades) repo.
+`haarcascade_frontalface_alt.xml` is the haarcascades for from the official [OpenCV](https://github.com/opencv/opencv/tree/4.x/data/haarcascades) repo.
 
-`lbfmodel.yaml` is copied from [https://github.com/kurnianggoro/GSOC2017>](https://github.com/kurnianggoro/GSOC2017)
+`shape_predictor_68_face_landmarks.dat` is the dlib facial landmarks model, copied from [http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2](http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)

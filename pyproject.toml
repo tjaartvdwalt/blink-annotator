@@ -7,7 +7,7 @@ license = "MIT"
 authors = [{ name = "Tjaart van der Walt", email = "tjaart@tjaart.org" }]
 
 keywords = ["opencv", "blink"]
-dependencies = ["matplotlib", "numpy", "opencv-contrib-python", "typer"]
+dependencies = ["dlib", "matplotlib", "numpy", "opencv-contrib-python", "typer"]
 
 [project.scripts]
 annotator = "blink_annotator:app"
