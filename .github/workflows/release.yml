@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 env:
   TAG: ${{ github.event.release.tag_name }}
   PACKAGE_NAME: blink_annotator
@@ -29,7 +32,7 @@ jobs:
           python -m build
 
       - name: Release with Notes
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
             dist/${{ env.PACKAGE_NAME }}-*.whl
