@@ -6,6 +6,7 @@ on:
 
 env:
   TAG: ${{ github.event.release.tag_name }}
+  PACKAGE_NAME: blink_annotator
 
 
 jobs:
@@ -31,7 +32,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/*.whl
+            dist/${{ env.PACKAGE_NAME }}-*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
