@@ -1,8 +1,9 @@
+import math
+import os
+
 import cv2 as cv
 import dlib
-import math
 import numpy as np
-import os
 
 
 class CascadeLoadException(Exception):
@@ -18,17 +19,11 @@ class EAR:
         self,
         cascade_file=os.path.join(
             os.path.dirname(__file__),
-            "..",
-            "..",
-            "..",
             "models",
             "haarcascade_frontalface_alt.xml",
         ),
         facemarks_file=os.path.join(
             os.path.dirname(__file__),
-            "..",
-            "..",
-            "..",
             "models",
             "shape_predictor_68_face_landmarks.dat",
         ),
@@ -76,7 +71,9 @@ class EAR:
             print(f"face: {face}")
             # x1 = face[0]
             # y2 = face[1]
-            drect = dlib.rectangle(face[0], face[1], face[0] + face[2], face[1] + face[3])
+            drect = dlib.rectangle(
+                face[0], face[1], face[0] + face[2], face[1] + face[3]
+            )
             self.__facemarks = self.facemarks_model(frame, drect)
 
         # print(face)

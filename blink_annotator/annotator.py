@@ -137,7 +137,8 @@ def osd(cap, frame, blinks, insert_mode):
 def draw_eye_marks(frame, facemarks):
     red = (0, 0, 255)
     for idx in range(36, 48):
-        cv.circle(frame, (facemarks.part(idx).x, facemarks.part(idx).y), 2, red, -1)
+        cv.circle(frame, (facemarks.part(idx).x,
+                  facemarks.part(idx).y), 2, red, -1)
 
     return frame
 
@@ -246,7 +247,8 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
 
             if insert_mode:
                 if c == "\x1b":  # Escape
-                    save_blinks(blinks_file, blinks)  # Save before leaving insert mode
+                    # Save before leaving insert mode
+                    save_blinks(blinks_file, blinks)
                     insert_mode = False
                 elif c in [" ", "n"]:
                     blinks[frame_number + 1] = blinks[frame_number]
@@ -291,7 +293,8 @@ def annotate(video_file: str, max_height: int = -1, start_frame: int = 0):
                     img = np.fromstring(
                         fig.canvas.tostring_rgb(), dtype=np.uint8, sep=""
                     )
-                    img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+                    img = img.reshape(
+                        fig.canvas.get_width_height()[::-1] + (3,))
 
                     # img is rgb, convert to opencv's default bgr
                     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)

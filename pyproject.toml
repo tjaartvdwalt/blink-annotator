@@ -1,10 +1,18 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+# [tool.flit.external-data]
+# directory = "models"
+
 [project]
 name = "blink-annotator"
+description = "Annotate blinks"
+authors = [{ name = "Tjaart van der Walt", email = "tjaart@tjaart.org" }]
 dynamic = ["version"]
 
 requires-python = ">=3.6"
 license = "MIT"
-authors = [{ name = "Tjaart van der Walt", email = "tjaart@tjaart.org" }]
 
 keywords = ["opencv", "blink"]
 dependencies = ["dlib", "matplotlib", "numpy", "opencv-contrib-python", "typer"]
@@ -12,19 +20,3 @@ dependencies = ["dlib", "matplotlib", "numpy", "opencv-contrib-python", "typer"]
 [project.scripts]
 annotator = "blink_annotator:app"
 
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.targets.wheel.force-include]
-"./models" = "models"
-
-# build.hooks.vcs.version-file = "src/<package>/version.py"
-
-# [tool.hatch.build.targets.wheel]
-# artifacts = [
-#   "./models/haarcascade_frontalface_alt.xml"
-# ]
-
-[build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"

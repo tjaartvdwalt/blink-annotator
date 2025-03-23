@@ -39,7 +39,8 @@ class EyeBlinkEntry:
         self.right_eye_fully_closed = True if entries[5] == "C" else False
         self.right_eye_not_visible = True if entries[6] == "N" else False
         self.face = (
-            (int(entries[7]), int(entries[8]), int(entries[9]), int(entries[10]))
+            (int(entries[7]), int(entries[8]),
+             int(entries[9]), int(entries[10]))
             if (
                 entries[7] != ""
                 or entries[8] != ""

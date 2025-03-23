@@ -1,6 +1,7 @@
 # import typer
 #
 from blink_annotator.annotator import annotate
+
 #
 #
 # def main():
