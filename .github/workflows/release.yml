@@ -6,7 +6,6 @@ on:
 
 env:
   TAG: ${{ github.event.release.tag_name }}
-  PACKAGE_NAME: blink_annotator
 
 
 jobs:
@@ -22,7 +21,7 @@ jobs:
 
       - name: Update version file
         run: |
-          echo "__version__ = '$TAG'" > $PACKAGE_NAME/__version__.py
+          echo "__version__ = '$TAG'" > blink_annotator/__version__.py
       - name: Build release distributions
         run: |
           python -m pip install build
@@ -32,7 +31,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/$PACKAGE_NAME-*.whl
+            dist/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
